@@ -8,68 +8,83 @@ public class Game1 {
 		final int LADDER=1;
 		final int SNAKE=2;
 		final int WIN_POS = 100;
-		 public void gameSim() {
-		
-			 int currPos = 0, count = 0;
+		public static int[] player2 = {0, 0}; // 0 index is count and 1st index is position
+		public static int[] player1 = {0, 0};
+		static int play = 1;
 
-             while(currPos != WIN_POS) {
-                     int diceRoll = diceRoll();
-                     //Option Check
-                     currPos = optionSelect(currPos, diceRoll);
+	        public void gameSim() {
+			while(player1[1] != WIN_POS && player2[1] != WIN_POS) {
+				if(play == 1){
+					System.out.println("\nPlayer 1 will have a turn.");
+					player1 = playTurn(player1, play);
+					System.out.println("Position of Player 1 at the end of the turn is " + player1[1]);
+				}else {
+					System.out.println("\nPlayer 2 will have a turn.");
+					player2 = playTurn(player2, play);
+	                                System.out.println("Position of Player 2 at the end of the turn is " + player2[1]);
+				}
+			}
 
-                     System.out.println("The current Position of the player is: " + currPos);
-			count++;
-             }
-		System.out.println("Total times dice played - " + count);
+			if(player1[1] > player2[1]){
+				System.out.println("Player 1 wins in " + player1[0] + " moves.");
+			}else
+				System.out.println("Player 2 wins in " + player2[0] + " moves.");
+		}
 
-     }
+		public int[] playTurn(int[] player, int play) {
 
+			player[0]++;
 
-	public int diceRoll() {
+			int dice = diceRoll();
+			System.out.println("The Dice Rolled for " + dice);
+			int opt = optionSelect();
+			switch(opt) {
+				case NO_PLAY:
+					System.out.println("Option was for No Play");
+					switchPlayer();
+					System.out.println("Current position of player " + play + " is " + player[1]);
+					return player;
 
-	        //Dice Roll
-		int dice = 1 + (int)( (Math.random() * 10) % 6);
-		System.out.println("The Dice Rolled: " + dice);
-		return dice;
+				case LADDER:
+					System.out.println("Option was for Ladder, player " + play + " will play again");
+					player[1] += dice;
+					if(player[1] > WIN_POS) {
+						System.out.println("Move exceed game boundaries hence no movement");
+						player[1] -= dice;
+	                                }
+					System.out.println("Current position of player " + play + " is " + player[1]);
+					player = playTurn(player, play);
+					break;
 
-	}
+				case SNAKE:
+					System.out.println("Option was for Snake");
+					player[1] -= dice;
+					if(player[1] < 0) {
+						System.out.println("Move falls below game boundaries hence will move to start position.");
+						player[1] = 0;
+					}
+					switchPlayer();
+	                                System.out.println("Current position of player " + play + " is " + player[1]);
+					return player;
+			}
+			return player;
+		}
 
-	public int optionSelect(int currPos, int diceRoll) {
-		//Option Selection No Play/Snake/Ladder
-		int option = (int)( (Math.random() * 10) % 3 );
-		switch(option) {
-			case NO_PLAY:
-				System.out.println("The option was to no play, hence the player will not advance.");
-                             break;
+		public void switchPlayer() {
+			if(play == 1) {
+				play = 2;
+			} else
+				play = 1;
+		}
 
-                     case LADDER:
-                             currPos += diceRoll;
-				if(currPos > WIN_POS) {
-					System.out.println("Since the current dice roll for Ladder will take the player out of " + WIN_POS + " bound, hence the player will not move forward.");
-					currPos -=diceRoll;
-				}else
-					System.out.println("The option came to Ladder, the player will move forward: " + diceRoll + " steps.");
-                             return currPos;
+		public int diceRoll() {
+			return (int)(((Math.random() * 10) % 6) + 1);
+		}
 
-			case SNAKE:
-                             currPos -= diceRoll;
-                     	if(currPos<0) { //If current position goes below 0, reset
-					System.out.println("Since the current dice roll for snake will take player below 0, the player will move to start position.");
-                             	currPos = 0;
-				}else
-					System.out.println("The option came to Snake, the player will move backward: " + diceRoll + " steps.");
-                             return currPos;
-
-                     default:
-                             System.out.println("Some error occured, default case");
-                             break;
-
-                     }
-		return currPos;
-	}
-
-	public static void main(String[] args) {
-
+		public int optionSelect() {
+	        	return (int) ((Math.random() * 10) % 3);
+		}
+		public static void main(String[] args) {
 	Game1 obj = new Game1();
 	obj.gameSim();
 }
