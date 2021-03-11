@@ -10,14 +10,17 @@ public class Game1 {
 		final int WIN_POS = 100;
 		 public void gameSim() {
 		
-			 int currPos = 0;
+			 int currPos = 0, count = 0;
+
              while(currPos != WIN_POS) {
                      int diceRoll = diceRoll();
                      //Option Check
                      currPos = optionSelect(currPos, diceRoll);
 
                      System.out.println("The current Position of the player is: " + currPos);
+			count++;
              }
+		System.out.println("Total times dice played - " + count);
 
      }
 
