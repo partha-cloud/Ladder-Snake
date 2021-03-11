@@ -3,7 +3,8 @@ package Player;
 public class Game1 {
 
 	public static void main(String[] args) {
-		System.out.println("welcome to snake ladder problem");
+		int initialPos=0;
+		System.out.println("Players initial position is: "+ initialPos);
 
 	}
 
